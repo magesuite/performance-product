@@ -1,0 +1,13 @@
+{
+  "name": "creativestyle/magesuite-performance-product",
+  "description": "A module that collects performance improvements for products",
+  "type": "magento2-module",
+  "homepage": "https://creativestyle.de",
+  "license": "OSL-3.0",
+  "autoload": {
+    "files": [ "registration.php" ],
+    "psr-4": {
+      "MageSuite\\PerformanceProduct\\": ""
+    }
+  }
+}
