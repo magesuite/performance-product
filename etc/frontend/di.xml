@@ -4,4 +4,8 @@
         <plugin name="product_identities_extender" disabled="true" />
         <plugin name="product_identities_extender_optimized" type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Model\Plugin\Frontend\ProductIdentitiesExtender" />
     </type>
+
+    <type name="Magento\Catalog\Model\ResourceModel\Product\Collection">
+        <plugin name="preload_children_for_configurable_products" type="MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Product\Collection\PreloadChildren"/>
+    </type>
 </config>
