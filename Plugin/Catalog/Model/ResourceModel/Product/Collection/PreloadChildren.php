@@ -1,8 +1,8 @@
 <?php
 
-namespace MageSuite\PerformanceProduct\Observer\Catalog\Product\Collection;
+namespace MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Product\Collection;
 
-class PreloadChildren implements \Magento\Framework\Event\ObserverInterface
+class PreloadChildren
 {
 
     /**
@@ -24,23 +24,32 @@ class PreloadChildren implements \Magento\Framework\Event\ObserverInterface
         $this->optionProvider = $optionProvider;
     }
 
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function afterGetItems(\Magento\Catalog\Model\ResourceModel\Product\Collection $subject, $result)
     {
-        $collection = $observer->getCollection();
-        $productIds = $collection->getAllIds();
-        $childrenIds = $this->getChildProductIds($productIds);
-
-        if (empty($childrenIds)) {
-            return;
+        if ($subject->hasFlag('children_ids_preloaded')) {
+            return $result;
         }
 
-        foreach ($collection->getItems() as $item) {
-            $configurableId = $item->getEntityId();
-            if (array_key_exists($configurableId, $childrenIds)) {
-                $item->setChildrenProductIds($childrenIds[$configurableId]);
+        $subject->setFlag('children_ids_preloaded', true);
+
+        $productIds = [];
+        foreach ($result as $item) {
+            $productIds[] = $item->getEntityId();
+        }
+
+        $childrenIds = $this->getChildProductIds($productIds);
+        if (empty($childrenIds)) {
+            return $result;
+        }
+
+        foreach ($result as $item) {
+            $productId = $item->getEntityId();
+            if (array_key_exists($productId, $childrenIds)) {
+                $item->setChildrenProductIds($childrenIds[$productId]);
             }
         }
 
+        return $result;
     }
 
     protected function getChildProductIds($productIds)
@@ -48,7 +57,7 @@ class PreloadChildren implements \Magento\Framework\Event\ObserverInterface
         $connection = $this->resource->getConnection(\Magento\Framework\App\ResourceConnection::DEFAULT_CONNECTION);
         $configurableRelationsTableName = $connection->getTableName('catalog_product_super_link');
         $productTable = $connection->getTableName('catalog_product_entity');
-        
+
         $select = $connection->select()->from(
             ['l' => $configurableRelationsTableName],
             ['product_id', 'parent_id']

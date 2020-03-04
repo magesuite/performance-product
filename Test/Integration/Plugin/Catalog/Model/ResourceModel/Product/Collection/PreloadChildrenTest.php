@@ -1,6 +1,6 @@
 <?php
 
-namespace MageSuite\PerformanceProduct\Test\Integration\Observer\Catalog\Product\Collection;
+namespace MageSuite\PerformanceProduct\Test\Integration\Plugin\Catalog\Model\ResourceModel\Product\Collection;
 
 class PreloadChildrenTest extends \PHPUnit\Framework\TestCase
 {
@@ -35,7 +35,7 @@ class PreloadChildrenTest extends \PHPUnit\Framework\TestCase
         ];
 
         $collection = $this->productCollectionFactory->create();
-        foreach ($collection as $item) {
+        foreach ($collection->getItems() as $item) {
             $result = $item->getChildrenProductIds();
             $expectedResult = $expectedResults[$item->getSku()];
 
