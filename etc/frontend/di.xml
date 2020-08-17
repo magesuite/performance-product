@@ -8,4 +8,8 @@
     <type name="Magento\Catalog\Model\ResourceModel\Product\Collection">
         <plugin name="preload_children_for_configurable_products" type="MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Product\Collection\PreloadChildren"/>
     </type>
+
+    <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
+        <plugin name="swatches_disable_option_prices" type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Block\Product\View\Type\Configurable\DisableSwatchesOptionPrices"/>
+    </type>
 </config>
