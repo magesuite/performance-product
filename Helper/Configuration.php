@@ -4,7 +4,7 @@ namespace MageSuite\PerformanceProduct\Helper;
 
 class Configuration
 {
-    const XNL_PATH_SWATCHES_DISABLE_OPTION_PRICES = 'product_performance/swatches/disable_option_prices';
+    const XNL_PATH_SWATCHES_ASYNC_OPTION_PRICES = 'product_performance/swatches/async_option_prices';
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -16,8 +16,8 @@ class Configuration
         $this->scopeConfig = $scopeConfigInterface;
     }
 
-    public function areSwatchesOptionPricesDisabled()
+    public function isAsyncOptionPricesEnabled()
     {
-        return (bool)$this->scopeConfig->getValue(self::XNL_PATH_SWATCHES_DISABLE_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return (bool)$this->scopeConfig->getValue(self::XNL_PATH_SWATCHES_ASYNC_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

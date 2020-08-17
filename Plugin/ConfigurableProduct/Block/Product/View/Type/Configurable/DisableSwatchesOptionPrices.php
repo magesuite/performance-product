@@ -62,7 +62,7 @@ class DisableSwatchesOptionPrices
 
     public function aroundGetJsonConfig(\Magento\ConfigurableProduct\Block\Product\View\Type\Configurable $subject, \Closure $proceed)
     {
-        if (!$this->configuration->areSwatchesOptionPricesDisabled()) {
+        if (!$this->configuration->isAsyncOptionPricesEnabled()) {
             return $proceed();
         }
 

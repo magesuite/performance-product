@@ -3,7 +3,7 @@
     <default>
         <product_performance>
             <swatches>
-                <disable_option_prices>0</disable_option_prices>
+                <async_option_prices>1</async_option_prices>
             </swatches>
         </product_performance>
     </default>
