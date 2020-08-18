@@ -5,36 +5,25 @@ namespace MageSuite\PerformanceProduct\Model\Command\Swatches;
 class GetOptionPrices
 {
     /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
      * @var \Magento\Framework\Locale\Format
      */
     protected $localeFormat;
 
-    public function __construct(
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Magento\Framework\Locale\Format $localeFormat
-    ) {
-        $this->productRepository = $productRepository;
+    public function __construct(\Magento\Framework\Locale\Format $localeFormat)
+    {
         $this->localeFormat = $localeFormat;
     }
 
-    public function execute($productId)
+    public function execute($product)
     {
         $prices = [];
 
-        $allowProducts = $this->getAllowProducts($productId);
+        $allowProducts = $this->getAllowProducts($product);
 
-        if (!$productId) {
-            return $prices;
-        }
+        foreach ($allowProducts as $allowProduct) {
 
-        foreach ($allowProducts as $product) {
             $tierPrices = [];
-            $priceInfo = $product->getPriceInfo();
+            $priceInfo = $allowProduct->getPriceInfo();
             $tierPriceModel =  $priceInfo->getPrice('tier_price');
             $tierPricesList = $tierPriceModel->getTierPriceList();
 
@@ -48,7 +37,7 @@ class GetOptionPrices
                 ];
             }
 
-            $prices[$product->getId()] =
+            $prices[$allowProduct->getId()] =
                 [
                     'oldPrice' => [
                         'amount' => $this->localeFormat->getNumber(
@@ -68,7 +57,7 @@ class GetOptionPrices
                     'tierPrices' => $tierPrices,
                     'msrpPrice' => [
                         'amount' => $this->localeFormat->getNumber(
-                            $product->getMsrp()
+                            $allowProduct->getMsrp()
                         ),
                     ],
                 ];
@@ -77,10 +66,8 @@ class GetOptionPrices
         return $prices;
     }
 
-    protected function getAllowProducts($productId)
+    protected function getAllowProducts($product)
     {
-        $product = $this->getProduct($productId);
-
         if (!$product || $product->getTypeId() != \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
             return null;
         }
@@ -95,20 +82,5 @@ class GetOptionPrices
         }
 
         return $products;
-    }
-
-    protected function getProduct($productId)
-    {
-        if (!$productId) {
-            return null;
-        }
-
-        try {
-            $product = $this->productRepository->getById($productId);
-        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
-            return null;
-        }
-
-        return $product;
     }
 }
