@@ -10,7 +10,7 @@ class PreloadChildrenTest extends \PHPUnit\Framework\TestCase
      */
     protected $productCollectionFactory;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->productCollectionFactory = \Magento\TestFramework\ObjectManager::getInstance()->get(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class);
     }
