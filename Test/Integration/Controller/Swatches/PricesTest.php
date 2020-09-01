@@ -13,7 +13,7 @@ class PricesTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     protected $productRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
