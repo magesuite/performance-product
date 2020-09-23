@@ -1,7 +1,7 @@
 /**
  * Mixin that loads prices information asynchronously so they work properly with base component.
  */
-define(['jquery', 'mage/url'], function ($, url) {
+define(['jquery', 'underscore', 'mage/url'], function ($, _, url) {
     'use strict';
 
     return function (swatchRenderer) {
@@ -9,7 +9,7 @@ define(['jquery', 'mage/url'], function ($, url) {
             _RenderControls: function () {
                 var jsonConfig = this.options.jsonConfig;
 
-                if (!jsonConfig.optionPrices.length) {
+                if (_.isEmpty(jsonConfig.optionPrices)) {
                     this._hasAsyncPrices = true;
 
                     $.each(jsonConfig.attributes, function () {
