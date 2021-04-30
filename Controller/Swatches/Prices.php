@@ -14,38 +14,62 @@ class Prices extends \Magento\Framework\App\Action\Action implements \Magento\Fr
      */
     protected $getOptionPrices;
 
+    /**
+     * @var \Magento\Framework\View\Result\PageFactory
+     */
+    protected $resultPageFactory;
+
+    /**
+     * @var \Magento\PageCache\Model\Config
+     */
+    protected $pageCacheConfig;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \MageSuite\PerformanceProduct\Model\Command\Swatches\GetOptionPrices $getOptionPrices
+        \MageSuite\PerformanceProduct\Model\Command\Swatches\GetOptionPrices $getOptionPrices,
+        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
+        \Magento\PageCache\Model\Config $pageCacheConfig
     ) {
         parent::__construct($context);
 
         $this->productRepository = $productRepository;
         $this->getOptionPrices = $getOptionPrices;
+        $this->resultPageFactory = $resultPageFactory;
+        $this->pageCacheConfig = $pageCacheConfig;
     }
 
     public function execute()
     {
-        $result = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON);
         $productId = (int)$this->getRequest()->getParam('product_id');
 
         if (!$productId) {
-            return $result;
+            return $this->setNotFoundHeaders();
         }
 
         $product = $this->getProduct($productId);
 
-        if (!$product) {
-            return $result;
+        if (!$product || $product->getTypeId() != \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
+            return $this->setNotFoundHeaders();
         }
 
-        $optionPrices = $this->getOptionPrices->execute($product);
+        $this->getResponse()->setPublicHeaders($this->pageCacheConfig->getTtl());
 
+        $optionPrices = $this->getOptionPrices->execute($product);
+        $result = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON);
         $result->setHeader('X-Magento-Tags', $this->getProductIdentities($product));
         $result->setData($optionPrices);
 
         return $result;
+    }
+
+    protected function setNotFoundHeaders()
+    {
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->setStatusHeader(404, '1.1', 'Not Found');
+        $resultPage->setHeader('Status', '404 File not found');
+
+        return $resultPage;
     }
 
     protected function getProductIdentities($product)
