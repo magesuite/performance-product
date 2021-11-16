@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Catalog\Model\Product">
-        <plugin name="product_identities_extender" disabled="true" />
-        <plugin name="product_identities_extender_optimized" type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Model\Plugin\Frontend\ProductIdentitiesExtender" />
+        <plugin name="product_identities_extender" disabled="true"/>
+        <plugin name="product_identities_extender_optimized" type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Model\Plugin\Frontend\ProductIdentitiesExtender"/>
+        <plugin name="add_bundle_child_identities" disabled="true"/>
+        <plugin name="add_bundle_child_identities_optimized" type="MageSuite\PerformanceProduct\Plugin\BundleProduct\Model\Plugin\Frontend\ProductIdentitiesExtender" sortOrder="100"/>
     </type>
 
     <type name="Magento\Catalog\Model\ResourceModel\Product\Collection">
-        <plugin name="preload_children_for_configurable_products" type="MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Product\Collection\PreloadChildren"/>
+        <plugin name="preload_children_for_configurable_products" type="MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Product\Collection\PreloadChildrenForConfigurableProducts"/>
+        <plugin name="preload_selection_for_bundle_products" type="MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Product\Collection\PreloadSelectionForBundleProducts"/>
     </type>
 
     <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
-        <plugin name="swatches_disable_option_prices" type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Block\Product\View\Type\Configurable\DisableSwatchesOptionPrices"/>
+        <plugin name="disable_swatches_option_prices" type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Block\Product\View\Type\Configurable\DisableSwatchesOptionPrices"/>
     </type>
 </config>

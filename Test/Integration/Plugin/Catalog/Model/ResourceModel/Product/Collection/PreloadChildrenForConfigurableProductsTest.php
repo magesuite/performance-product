@@ -2,15 +2,14 @@
 
 namespace MageSuite\PerformanceProduct\Test\Integration\Plugin\Catalog\Model\ResourceModel\Product\Collection;
 
-class PreloadChildrenTest extends \PHPUnit\Framework\TestCase
+class PreloadChildrenForConfigurableProductsTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
      */
     protected $productCollectionFactory;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->productCollectionFactory = \Magento\TestFramework\ObjectManager::getInstance()->get(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class);
     }
