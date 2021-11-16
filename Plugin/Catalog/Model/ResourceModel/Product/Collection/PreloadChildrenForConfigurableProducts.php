@@ -2,9 +2,8 @@
 
 namespace MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Product\Collection;
 
-class PreloadChildren
+class PreloadChildrenForConfigurableProducts
 {
-
     /**
      * @var \Magento\Framework\App\ResourceConnection
      */
@@ -18,8 +17,7 @@ class PreloadChildren
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resource,
         \Magento\ConfigurableProduct\Model\ResourceModel\Attribute\OptionProvider $optionProvider
-    )
-    {
+    ) {
         $this->resource = $resource;
         $this->optionProvider = $optionProvider;
     }
@@ -31,19 +29,29 @@ class PreloadChildren
         }
 
         $subject->setFlag('children_ids_preloaded', true);
-
         $productIds = [];
-        foreach ($result as $item) {
-            $productIds[] = $item->getEntityId();
+
+        foreach ($subject->getItems() as $item) {
+            if ($item->getTypeId() != \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
+                continue;
+            }
+
+            $productIds[] = $item->getId();
+        }
+
+        if (empty($productIds)) {
+            return $result;
         }
 
         $childrenIds = $this->getChildProductIds($productIds);
+
         if (empty($childrenIds)) {
             return $result;
         }
 
         foreach ($result as $item) {
             $productId = $item->getEntityId();
+
             if (array_key_exists($productId, $childrenIds)) {
                 $item->setChildrenProductIds($childrenIds[$productId]);
             }
@@ -73,9 +81,9 @@ class PreloadChildren
             'p.entity_id IN (?)',
             $productIds
         );
-        $data = $connection->fetchAll($select);
+        $data = (array)$connection->fetchAll($select);
 
-        if (empty($data) || !is_array($data)) {
+        if (empty($data)) {
             return [];
         }
 
@@ -88,5 +96,4 @@ class PreloadChildren
 
         return $childrenIds;
     }
-
 }

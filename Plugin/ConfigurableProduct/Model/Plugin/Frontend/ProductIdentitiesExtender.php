@@ -1,14 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Model\Plugin\Frontend;
 
 class ProductIdentitiesExtender
 {
+    public function afterGetIdentities(
+        \Magento\Catalog\Model\Product $subject,
+        array $identities
+    ): array {
+        $childrenProductIds = (array)$subject->getChildrenProductIds();
 
-    public function afterGetIdentities(\Magento\Catalog\Model\Product $subject, array $identities): array
-    {
-        $childrenProductIds = $subject->getChildrenProductIds();
-        if (empty($childrenProductIds) || !is_array($childrenProductIds)) {
+        if (empty($childrenProductIds)) {
             return $identities;
         }
 
