@@ -68,7 +68,7 @@ class PreloadSelectionForBundleProducts
         $connection = $this->resourceConnection->getConnection();
         $select = $connection->select()->from(
             ['tbl_selection' => $connection->getTableName('catalog_product_bundle_selection')],
-            ['product_id', 'parent_product_id']
+            ['product_id']
         )->join(
             ['e' => $connection->getTableName('catalog_product_entity')],
             'e.entity_id = tbl_selection.product_id AND e.required_options=0',
@@ -90,7 +90,7 @@ class PreloadSelectionForBundleProducts
         $selectionProductIds = [];
 
         foreach ($data as $item) {
-            $selectionProductIds[$item['parent_product_id']][] = $item['product_id'];
+            $selectionProductIds[$item['entity_id']][] = $item['product_id'];
         }
 
         return $selectionProductIds;
