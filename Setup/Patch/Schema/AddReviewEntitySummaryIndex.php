@@ -14,8 +14,7 @@ class AddReviewEntitySummaryIndex implements \Magento\Framework\Setup\Patch\Data
      */
     public function __construct(
         \Magento\Framework\Setup\ModuleDataSetupInterface $moduleDataSetup
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
     }
 

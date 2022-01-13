@@ -15,4 +15,8 @@
     <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
         <plugin name="disable_swatches_option_prices" type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Block\Product\View\Type\Configurable\DisableSwatchesOptionPrices"/>
     </type>
+
+    <type name="Magento\Customer\Model\ResourceModel\GroupExcludedWebsiteRepository">
+        <plugin name="cache_results" type="MageSuite\PerformanceProduct\Plugin\Customer\Model\ResourceModel\GroupExcludedWebsite\CacheResults"/>
+    </type>
 </config>
