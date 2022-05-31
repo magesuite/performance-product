@@ -41,6 +41,11 @@ class DisableSwatchesOptionPrices
      */
     protected $jsonEncoder;
 
+    /**
+     * @var \Magento\Catalog\Model\Product\Image\UrlBuilder
+     */
+    protected $imageUrlBuilder;
+
     public function __construct(
         \Magento\Framework\App\Request\Http $request,
         \MageSuite\PerformanceProduct\Helper\Configuration $configuration,
@@ -48,7 +53,8 @@ class DisableSwatchesOptionPrices
         \Magento\ConfigurableProduct\Model\ConfigurableAttributeData $configurableAttributeData,
         \Magento\Framework\Locale\Format $localeFormat,
         \Magento\ConfigurableProduct\Model\Product\Type\Configurable\Variations\Prices $variationPrices,
-        \Magento\Framework\Json\EncoderInterface $jsonEncoder
+        \Magento\Framework\Json\EncoderInterface $jsonEncoder,
+        \Magento\Catalog\Model\Product\Image\UrlBuilder $imageUrlBuilder
     ) {
         $this->request = $request;
         $this->configuration = $configuration;
@@ -57,6 +63,7 @@ class DisableSwatchesOptionPrices
         $this->localeFormat = $localeFormat;
         $this->variationPrices = $variationPrices;
         $this->jsonEncoder = $jsonEncoder;
+        $this->imageUrlBuilder = $imageUrlBuilder;
     }
 
     public function aroundGetJsonConfig(\Magento\ConfigurableProduct\Block\Product\View\Type\Configurable $subject, \Closure $proceed)
@@ -117,6 +124,8 @@ class DisableSwatchesOptionPrices
                         'isMain' => $image->getFile() == $product->getImage(),
                         'type' => str_replace('external-', '', $image->getMediaType()),
                         'videoUrl' => $image->getVideoUrl(),
+                        'tile' => $this->imageUrlBuilder->getUrl($image->getFile(), 'category_page_grid'),
+                        'tile2x' => $this->imageUrlBuilder->getUrl($image->getFile(), 'category_page_grid_x2')
                     ];
             }
         }
