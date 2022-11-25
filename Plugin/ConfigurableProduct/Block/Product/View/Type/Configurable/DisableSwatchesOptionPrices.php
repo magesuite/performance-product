@@ -98,6 +98,14 @@ class DisableSwatchesOptionPrices
             'index' => isset($options['index']) ? $options['index'] : [],
         ];
 
+        if (isset($options['salable'])) {
+            $config['salable'] = $options['salable'];
+        }
+
+        if (isset($options['canDisplayShowOutOfStockStatus'])) {
+            $config['canDisplayShowOutOfStockStatus'] = $options['canDisplayShowOutOfStockStatus'];
+        }
+
         if ($currentProduct->hasPreconfiguredValues() && !empty($attributesData['defaultValues'])) {
             $config['defaultValues'] = $attributesData['defaultValues'];
         }
