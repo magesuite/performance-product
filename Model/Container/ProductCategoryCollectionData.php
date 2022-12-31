@@ -45,7 +45,7 @@ class ProductCategoryCollectionData extends \Magento\Framework\DataObject
         }
 
         $collection = $this->loadedCollectionFactory->create();
-        $collection->addItems($categories);
+        $collection->setItems($categories);
 
         return $collection;
     }

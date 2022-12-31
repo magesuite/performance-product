@@ -6,11 +6,9 @@ namespace MageSuite\PerformanceProduct\Model\ResourceModel\Category;
 
 class LoadedCollection extends \Magento\Catalog\Model\ResourceModel\Category\Collection
 {
-    public function addItems(array $items)
+    public function setItems(array $items): void
     {
-        foreach ($items as $item) {
-            $this->_addItem($item);
-        }
+        $this->_items = $items;
     }
 
     public function isLoaded(): bool
