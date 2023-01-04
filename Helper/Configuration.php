@@ -4,20 +4,17 @@ namespace MageSuite\PerformanceProduct\Helper;
 
 class Configuration
 {
-    const XNL_PATH_SWATCHES_ASYNC_OPTION_PRICES = 'product_performance/swatches/async_option_prices';
+    public const XNL_PATH_SWATCHES_ASYNC_OPTION_PRICES = 'product_performance/swatches/async_option_prices';
 
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
+    protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
 
     public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface)
     {
         $this->scopeConfig = $scopeConfigInterface;
     }
 
-    public function isAsyncOptionPricesEnabled()
+    public function isAsyncOptionPricesEnabled(): bool
     {
-        return (bool)$this->scopeConfig->getValue(self::XNL_PATH_SWATCHES_ASYNC_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->isSetFlag(self::XNL_PATH_SWATCHES_ASYNC_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }
