@@ -96,6 +96,7 @@ class DisableSwatchesOptionPrices
             'chooseText' => __('Choose an Option...'),
             'images' => $this->getOptionImages($allowProducts),
             'index' => isset($options['index']) ? $options['index'] : [],
+            'salable' => [],
         ];
 
         if (isset($options['salable'])) {
