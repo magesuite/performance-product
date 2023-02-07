@@ -46,6 +46,11 @@ class DisableSwatchesOptionPrices
      */
     protected $imageUrlBuilder;
 
+    /**
+     * @var \Magento\Framework\App\ProductMetadataInterface
+     */
+    protected $productMetadata;
+
     public function __construct(
         \Magento\Framework\App\Request\Http $request,
         \MageSuite\PerformanceProduct\Helper\Configuration $configuration,
@@ -54,7 +59,8 @@ class DisableSwatchesOptionPrices
         \Magento\Framework\Locale\Format $localeFormat,
         \Magento\ConfigurableProduct\Model\Product\Type\Configurable\Variations\Prices $variationPrices,
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
-        \Magento\Catalog\Model\Product\Image\UrlBuilder $imageUrlBuilder
+        \Magento\Catalog\Model\Product\Image\UrlBuilder $imageUrlBuilder,
+        \Magento\Framework\App\ProductMetadataInterface $productMetadata
     ) {
         $this->request = $request;
         $this->configuration = $configuration;
@@ -64,6 +70,7 @@ class DisableSwatchesOptionPrices
         $this->variationPrices = $variationPrices;
         $this->jsonEncoder = $jsonEncoder;
         $this->imageUrlBuilder = $imageUrlBuilder;
+        $this->productMetadata = $productMetadata;
     }
 
     public function aroundGetJsonConfig(\Magento\ConfigurableProduct\Block\Product\View\Type\Configurable $subject, \Closure $proceed)
@@ -96,11 +103,13 @@ class DisableSwatchesOptionPrices
             'chooseText' => __('Choose an Option...'),
             'images' => $this->getOptionImages($allowProducts),
             'index' => isset($options['index']) ? $options['index'] : [],
-            'salable' => [],
         ];
 
         if (isset($options['salable'])) {
             $config['salable'] = $options['salable'];
+        } else if(version_compare($this->productMetadata->getVersion(), '2.4.4', '>=')) {
+            // we need empty salable array in case all variants are not salable for Magento >= 2.4.4
+            $config['salable'] = [];
         }
 
         if (isset($options['canDisplayShowOutOfStockStatus'])) {
