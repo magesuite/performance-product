@@ -5,6 +5,9 @@
             <swatches>
                 <async_option_prices>1</async_option_prices>
             </swatches>
+            <attributes>
+                <cache_attribiute_text_values>1</cache_attribiute_text_values>
+            </attributes>
         </product_performance>
     </default>
 </config>

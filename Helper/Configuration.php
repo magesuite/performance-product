@@ -4,7 +4,9 @@ namespace MageSuite\PerformanceProduct\Helper;
 
 class Configuration
 {
-    public const XNL_PATH_SWATCHES_ASYNC_OPTION_PRICES = 'product_performance/swatches/async_option_prices';
+    public const XML_PATH_SWATCHES_ASYNC_OPTION_PRICES = 'product_performance/swatches/async_option_prices';
+
+    public const XML_PATH_CACHING_ATTRIBUTE_TEXT_VALUES = 'product_performance/swatches/caching_attribute_text_values';
 
     protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
 
@@ -15,6 +17,11 @@ class Configuration
 
     public function isAsyncOptionPricesEnabled(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::XNL_PATH_SWATCHES_ASYNC_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SWATCHES_ASYNC_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    public function isCachingAttributeTextValuesEnabled(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SWATCHES_ASYNC_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }
