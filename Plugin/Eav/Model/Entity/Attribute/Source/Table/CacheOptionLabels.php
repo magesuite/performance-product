@@ -32,8 +32,8 @@ class CacheOptionLabels
             $this->cachedLabels = $this->getAllOptionLabels();
         }
 
-        if (is_string($ids)) {
-            $ids = explode(',', $ids);
+        if (!is_array($ids)) {
+            $ids = is_string($ids) ? explode(',', $ids) : [$ids];
         }
 
         $options = [];
@@ -43,6 +43,8 @@ class CacheOptionLabels
 
             if (isset($this->cachedLabels[$attributeId][$id][$storeId])) {
                 $options[] = $this->cachedLabels[$attributeId][$id][$storeId];
+            } elseif (isset($this->cachedLabels[$attributeId][$id][0])) {
+                $options[] = $this->cachedLabels[$attributeId][$id][0];
             }
         }
 
