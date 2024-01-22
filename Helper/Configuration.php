@@ -6,7 +6,7 @@ class Configuration
 {
     public const XML_PATH_SWATCHES_ASYNC_OPTION_PRICES = 'product_performance/swatches/async_option_prices';
 
-    public const XML_PATH_CACHING_ATTRIBUTE_TEXT_VALUES = 'product_performance/swatches/caching_attribute_text_values';
+    public const XML_PATH_CACHE_ATTRIBUTE_TEXT_VALUES = 'product_performance/attributes/cache_attribute_text_values';
 
     protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
 
@@ -20,8 +20,8 @@ class Configuration
         return $this->scopeConfig->isSetFlag(self::XML_PATH_SWATCHES_ASYNC_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
-    public function isCachingAttributeTextValuesEnabled(): bool
+    public function isCacheAttributeTextValuesEnabled(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::XML_PATH_SWATCHES_ASYNC_OPTION_PRICES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(self::XML_PATH_CACHE_ATTRIBUTE_TEXT_VALUES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

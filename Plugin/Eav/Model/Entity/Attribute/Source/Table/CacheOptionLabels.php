@@ -24,7 +24,7 @@ class CacheOptionLabels
         $ids,
         $withEmpty
     ) {
-        if ($this->configuration->isCachingAttributeTextValuesEnabled()) {
+        if (!$this->configuration->isCacheAttributeTextValuesEnabled()) {
             return $proceed($ids, $withEmpty);
         }
 
