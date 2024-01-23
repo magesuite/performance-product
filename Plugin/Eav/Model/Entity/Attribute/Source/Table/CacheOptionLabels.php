@@ -81,7 +81,7 @@ class CacheOptionLabels
             $storeId = $option['store_id'];
 
             $result[$attributeId][$optionId][$storeId] = [
-                'value' => $option['value_id'],
+                'value' => $option['option_id'],
                 'label' => $option['value']
             ];
         }
