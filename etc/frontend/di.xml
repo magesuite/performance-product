@@ -19,4 +19,8 @@
     <type name="Magento\Customer\Model\ResourceModel\GroupExcludedWebsiteRepository">
         <plugin name="cache_results" type="MageSuite\PerformanceProduct\Plugin\Customer\Model\ResourceModel\GroupExcludedWebsite\CacheResults"/>
     </type>
+
+    <type name="Magento\Eav\Model\Entity\Attribute\Source\Table">
+        <plugin name="cache_option_lables" type="MageSuite\PerformanceProduct\Plugin\Eav\Model\Entity\Attribute\Source\Table\CacheOptionLabels"/>
+    </type>
 </config>
