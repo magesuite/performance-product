@@ -23,4 +23,8 @@
     <type name="Magento\Eav\Model\Entity\Attribute\Source\Table">
         <plugin name="cache_option_lables" type="MageSuite\PerformanceProduct\Plugin\Eav\Model\Entity\Attribute\Source\Table\CacheOptionLabels"/>
     </type>
+
+    <type name="Magento\Catalog\Helper\Data">
+        <plugin name="cache_tax_price_within_single_request" type="MageSuite\PerformanceProduct\Plugin\Catalog\Helper\Data\CacheTaxPriceWithinSingleRequest"/>
+    </type>
 </config>
