@@ -10,12 +10,16 @@ class CacheOptionLabels
 
     protected \Magento\Framework\App\ResourceConnection $resourceConnection;
 
+    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
+
     public function __construct(
         \MageSuite\PerformanceProduct\Helper\Configuration $configuration,
-        \Magento\Framework\App\ResourceConnection $resourceConnection
+        \Magento\Framework\App\ResourceConnection $resourceConnection,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->configuration = $configuration;
         $this->resourceConnection = $resourceConnection;
+        $this->storeManager = $storeManager;
     }
 
     public function aroundGetSpecificOptions(
@@ -39,7 +43,7 @@ class CacheOptionLabels
         $options = [];
         foreach ($ids as $id) {
             $attributeId = $subject->getAttribute()->getId();
-            $storeId = $subject->getAttribute()->getStoreId() ?: 0;
+            $storeId = $this->storeManager->getStore()->getId();
 
             if (isset($this->cachedLabels[$attributeId][$id][$storeId])) {
                 $options[] = $this->cachedLabels[$attributeId][$id][$storeId];
