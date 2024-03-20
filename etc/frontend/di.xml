@@ -12,6 +12,34 @@
         <plugin name="preload_selection_for_bundle_products" type="MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Product\Collection\PreloadSelectionForBundleProducts"/>
     </type>
 
+    <type name="Magento\Catalog\Block\Product\ListProduct">
+        <plugin
+                sortOrder="20"
+                name="preload_categories_collections"
+                type="MageSuite\PerformanceProduct\Plugin\Catalog\Block\Product\ListProduct\PreloadCategoriesCollections"/>
+    </type>
+
+    <type name="Magento\ConfigurableProduct\Model\Product\Type\Configurable">
+        <plugin
+                sortOrder="-20"
+                name="preload_categories_collections"
+                type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Model\Product\Type\Configurable\PreloadCategoriesCollections"/>
+    </type>
+
+    <type name="Magento\Bundle\Model\Product\Type">
+        <plugin
+            sortOrder="20"
+            name="preload_categories_collections"
+            type="MageSuite\PerformanceProduct\Plugin\Bundle\Model\Product\Type\PreloadCategoriesCollections"/>
+    </type>
+
+    <type name="\Magento\GroupedProduct\Model\Product\Type\Grouped">
+        <plugin
+            sortOrder="20"
+            name="preload_categories_collections"
+            type="MageSuite\PerformanceProduct\Plugin\GroupedProduct\Model\Product\Type\Grouped\PreloadCategoriesCollections"/>
+    </type>
+
     <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
         <plugin name="disable_swatches_option_prices" type="MageSuite\PerformanceProduct\Plugin\ConfigurableProduct\Block\Product\View\Type\Configurable\DisableSwatchesOptionPrices"/>
     </type>

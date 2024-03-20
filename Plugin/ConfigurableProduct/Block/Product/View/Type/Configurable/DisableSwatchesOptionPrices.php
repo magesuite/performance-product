@@ -107,7 +107,7 @@ class DisableSwatchesOptionPrices
 
         if (isset($options['salable'])) {
             $config['salable'] = $options['salable'];
-        } else if(version_compare($this->productMetadata->getVersion(), '2.4.4', '>=')) {
+        } elseif (version_compare($this->productMetadata->getVersion(), '2.4.4', '>=')) {
             // we need empty salable array in case all variants are not salable for Magento >= 2.4.4
             $config['salable'] = [];
         }

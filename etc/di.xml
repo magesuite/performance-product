@@ -6,16 +6,6 @@
         </arguments>
     </type>
 
-    <type name="MageSuite\PerformanceProduct\Model\Container\ProductCategoryCollectionData">
-        <arguments>
-            <argument name="data" xsi:type="array">
-                <item name="category_attributes" xsi:type="array">
-                    <item name="name" xsi:type="string">name</item>
-                </item>
-            </argument>
-        </arguments>
-    </type>
-
     <type name="Magento\CatalogRule\Model\Indexer\AbstractIndexer">
         <plugin name="disable_cache_clearing_when_no_catalog_rules_are_defined"
                 type="MageSuite\PerformanceProduct\Plugin\CatalogRule\Model\Indexer\AbstractIndexer\DisableCacheClearingWhenNoCatalogRulesAreDefined"
