@@ -43,7 +43,11 @@ class CacheOptionLabels
         $options = [];
         foreach ($ids as $id) {
             $attributeId = $subject->getAttribute()->getId();
-            $storeId = $this->storeManager->getStore()->getId();
+            $storeId = $subject->getAttribute()->getStoreId();
+
+            if ($storeId === null) {
+                $storeId = $this->storeManager->getStore()->getId();
+            }
 
             if (isset($this->cachedLabels[$attributeId][$id][$storeId])) {
                 $options[] = $this->cachedLabels[$attributeId][$id][$storeId];
