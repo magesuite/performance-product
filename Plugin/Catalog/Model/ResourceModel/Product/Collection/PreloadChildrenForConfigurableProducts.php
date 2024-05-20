@@ -4,22 +4,18 @@ namespace MageSuite\PerformanceProduct\Plugin\Catalog\Model\ResourceModel\Produc
 
 class PreloadChildrenForConfigurableProducts
 {
-    /**
-     * @var \Magento\Framework\App\ResourceConnection
-     */
-    protected $resource;
+    protected \Magento\Framework\App\ResourceConnection $resource;
 
-    /**
-     * @var \Magento\ConfigurableProduct\Model\ResourceModel\Attribute\OptionProvider
-     */
-    protected $optionProvider;
+    protected \Magento\Framework\EntityManager\MetadataPool $metadataPool;
+
+    protected ?string $productEntityLinkField = null;
 
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resource,
-        \Magento\ConfigurableProduct\Model\ResourceModel\Attribute\OptionProvider $optionProvider
+        \Magento\Framework\EntityManager\MetadataPool $metadataPool
     ) {
         $this->resource = $resource;
-        $this->optionProvider = $optionProvider;
+        $this->metadataPool = $metadataPool;
     }
 
     public function afterGetItems(\Magento\Catalog\Model\ResourceModel\Product\Collection $subject, array $result)
@@ -33,9 +29,11 @@ class PreloadChildrenForConfigurableProducts
         $configurableProductIds = [];
         $simpleProductIds = [];
 
+        $productEntityLinkField = $this->getProductEntityLinkField();
+
         foreach ($subject->getItems() as $item) {
             if ($item->getTypeId() == \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
-                $configurableProductIds[] = $item->getId();
+                $configurableProductIds[$item->getData($productEntityLinkField)] = $item->getId();
             } elseif ($item->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE) {
                 $simpleProductIds[] = $item->getId();
             }
@@ -87,7 +85,7 @@ class PreloadChildrenForConfigurableProducts
         $parentIds = [];
 
         foreach ($data as $value) {
-            $parentId = $value['parent_id'];
+            $parentId = $configurableProductIds[$value['parent_id']] ?? $value['parent_id'];
             $productId = $value['product_id'];
 
             if (in_array($parentId, $configurableProductIds)) {
@@ -103,5 +101,16 @@ class PreloadChildrenForConfigurableProducts
         $parentAndChildProductIds['parent_ids'] = $parentIds;
 
         return $parentAndChildProductIds;
+    }
+
+    protected function getProductEntityLinkField(): string
+    {
+        if (!$this->productEntityLinkField) {
+            $this->productEntityLinkField = $this->metadataPool
+                ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
+                ->getLinkField();
+        }
+
+        return $this->productEntityLinkField;
     }
 }
