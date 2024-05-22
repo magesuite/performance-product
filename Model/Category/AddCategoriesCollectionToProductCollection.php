@@ -25,6 +25,10 @@ class AddCategoriesCollectionToProductCollection
             ->addIdFilter(array_column($categories, 'category_id'))
             ->addAttributeToSelect('name');
 
+        if($this->getPreloadedStoreId() !== null) {
+            $categoriesCollection->setStoreId($this->getPreloadedStoreId());
+        }
+
         $allCategories = $categoriesCollection->getItems();
 
         foreach ($products as $product) {
@@ -50,6 +54,11 @@ class AddCategoriesCollectionToProductCollection
         }
 
         return $products;
+    }
+
+    public function getPreloadedStoreId(): ?int
+    {
+        return null;
     }
 
     private function executePrivateMethod(mixed $object, string $methodName, ...$args)
