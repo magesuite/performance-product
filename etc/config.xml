@@ -4,6 +4,7 @@
         <product_performance>
             <swatches>
                 <async_option_prices>1</async_option_prices>
+                <preload_child_products_images>1</preload_child_products_images>
             </swatches>
             <attributes>
                 <cache_attribute_text_values>1</cache_attribute_text_values>

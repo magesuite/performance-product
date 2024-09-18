@@ -15,6 +15,11 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[When enabled, prices for simple products on product tiles will be loaded on demand via JavaScript to reduce rendering time for POP and product tiles.]]></comment>
                 </field>
+                <field id="preload_child_products_images" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Preload Child Products Images</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[When enabled, configurable product children will have images preloaded for switching images on the tile.]]></comment>
+                </field>
             </group>
             <group id="attributes" translate="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Attributes</label>
