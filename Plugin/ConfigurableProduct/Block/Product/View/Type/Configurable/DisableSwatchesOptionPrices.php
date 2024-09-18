@@ -107,6 +107,7 @@ class DisableSwatchesOptionPrices
 
     protected function getConfigWithPrices($subject)
     {
+        $subject->unsetData('allow_products');
         $store = $subject->getCurrentStore();
         $currentProduct = $subject->getProduct();
         $allowProducts = $subject->getAllowProducts();
