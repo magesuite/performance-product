@@ -42,6 +42,11 @@ class DisableSwatchesOptionPrices
     protected $jsonEncoder;
 
     /**
+     * @var \Magento\Framework\Json\DecoderInterface
+     */
+    protected $jsonDecoder;
+
+    /**
      * @var \Magento\Catalog\Model\Product\Image\UrlBuilder
      */
     protected $imageUrlBuilder;
@@ -59,6 +64,7 @@ class DisableSwatchesOptionPrices
         \Magento\Framework\Locale\Format $localeFormat,
         \Magento\ConfigurableProduct\Model\Product\Type\Configurable\Variations\Prices $variationPrices,
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
+        \Magento\Framework\Json\DecoderInterface $jsonDecoder,
         \Magento\Catalog\Model\Product\Image\UrlBuilder $imageUrlBuilder,
         \Magento\Framework\App\ProductMetadataInterface $productMetadata
     ) {
@@ -69,22 +75,39 @@ class DisableSwatchesOptionPrices
         $this->localeFormat = $localeFormat;
         $this->variationPrices = $variationPrices;
         $this->jsonEncoder = $jsonEncoder;
+        $this->jsonDecoder = $jsonDecoder;
         $this->imageUrlBuilder = $imageUrlBuilder;
         $this->productMetadata = $productMetadata;
     }
 
     public function aroundGetJsonConfig(\Magento\ConfigurableProduct\Block\Product\View\Type\Configurable $subject, \Closure $proceed)
     {
-        if (!$this->configuration->isAsyncOptionPricesEnabled()) {
-            return $proceed();
-        }
-
         if ($this->request->getFullActionName() == self::CATALOG_PRODUCT_VIEW_FULL_ACTION_NAME) {
             return $proceed();
         }
 
-        $subject->unsetData('allow_products');
+        if (!$this->configuration->isAsyncOptionPricesEnabled()) {
+            $configEncoded = $proceed();
+            $config = $this->jsonDecoder->decode($configEncoded);
+        } else {
+            $config = $this->getConfigWithPrices($subject);
+        }
 
+        if ($this->configuration->isPreloadChildProductsImagesEnabled()) {
+            if (empty($config['images'])) {
+                $config['images'] = $this->getOptionImages($subject->getAllowProducts());
+            }
+        } else {
+            $config['images'] = [];
+        }
+
+
+        return $this->jsonEncoder->encode($config);
+    }
+
+    protected function getConfigWithPrices($subject)
+    {
+        $subject->unsetData('allow_products');
         $store = $subject->getCurrentStore();
         $currentProduct = $subject->getProduct();
         $allowProducts = $subject->getAllowProducts();
@@ -100,8 +123,8 @@ class DisableSwatchesOptionPrices
             'priceFormat' => $this->localeFormat->getPriceFormat(),
             'prices' => $this->variationPrices->getFormattedPrices($currentProduct->getPriceInfo()),
             'productId' => $currentProduct->getId(),
-            'chooseText' => __('Choose an Option...'),
             'images' => $this->getOptionImages($allowProducts),
+            'chooseText' => __('Choose an Option...'),
             'index' => isset($options['index']) ? $options['index'] : [],
         ];
 
@@ -120,9 +143,7 @@ class DisableSwatchesOptionPrices
             $config['defaultValues'] = $attributesData['defaultValues'];
         }
 
-        $config = array_merge($config, []);
-
-        return $this->jsonEncoder->encode($config);
+        return $config;
     }
 
     protected function getOptionImages($allowProducts)
