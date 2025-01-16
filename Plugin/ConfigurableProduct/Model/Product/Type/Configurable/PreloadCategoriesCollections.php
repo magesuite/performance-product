@@ -21,9 +21,10 @@ class PreloadCategoriesCollections
     public function aroundGetUsedProducts(
         \Magento\ConfigurableProduct\Model\Product\Type\Configurable $subject,
         callable $proceed,
-        $product
+        $product,
+        $requiredAttributeIds = null
     ): array {
-        $products = $proceed($product);
+        $products = $proceed($product, $requiredAttributeIds);
 
         if ($this->request->getFullActionName() !== 'catalog_product_view') {
             return $products;
