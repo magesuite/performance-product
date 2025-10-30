@@ -8,7 +8,7 @@ class ProductViewCache extends \Magento\TestFramework\TestCase\AbstractControlle
 {
     protected ?\Magento\Framework\App\Cache\Manager $cacheManager = null;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->cacheManager = $this->_objectManager->create(\Magento\Framework\App\Cache\Manager::class);
