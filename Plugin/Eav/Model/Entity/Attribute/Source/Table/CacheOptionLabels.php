@@ -40,6 +40,8 @@ class CacheOptionLabels
             $ids = is_string($ids) ? explode(',', $ids) : [$ids];
         }
 
+        $ids = array_filter($ids, fn($value) => $value !== null);
+
         $options = [];
         foreach ($ids as $id) {
             $attributeId = $subject->getAttribute()->getId();
@@ -87,6 +89,10 @@ class CacheOptionLabels
             $attributeId = $option['attribute_id'];
             $optionId = $option['option_id'];
             $storeId = $option['store_id'];
+
+            if ($optionId === null) {
+                continue;
+            }
 
             $result[$attributeId][$optionId][$storeId] = [
                 'value' => $option['option_id'],
