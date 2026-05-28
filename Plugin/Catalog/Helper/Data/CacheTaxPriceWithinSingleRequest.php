@@ -19,11 +19,11 @@ class CacheTaxPriceWithinSingleRequest
         $priceIncludesTax = null,
         $roundPrice = true
     ) {
-        if (!isset($this->cachedTaxPrice[$product->getId()][(int)$includingTax][(string)$price])) {
+        if (!isset($this->cachedTaxPrice[(int)$product->getId()][(int)$includingTax][(string)$price])) {
             $taxPrice = $proceed($product, $price, $includingTax, $shippingAddress, $billingAddress, $ctc, $store, $priceIncludesTax, $roundPrice);
-            $this->cachedTaxPrice[$product->getId()][(int)$includingTax][(string)$price] = $taxPrice;
+            $this->cachedTaxPrice[(int)$product->getId()][(int)$includingTax][(string)$price] = $taxPrice;
         }
 
-        return $this->cachedTaxPrice[$product->getId()][(int)$includingTax][(string)$price];
+        return $this->cachedTaxPrice[(int)$product->getId()][(int)$includingTax][(string)$price];
     }
 }
