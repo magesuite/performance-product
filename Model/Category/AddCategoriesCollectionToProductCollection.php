@@ -64,14 +64,12 @@ class AddCategoriesCollectionToProductCollection
     private function executePrivateMethod(mixed $object, string $methodName, ...$args)
     {
         $method = new \ReflectionMethod($object, $methodName);
-        $method->setAccessible(true);
         return $method->invokeArgs($object, $args);
     }
 
     private function setPrivateProperty(mixed $object, string $propertyName, $value)
     {
         $property = new \ReflectionProperty($object, $propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 }
