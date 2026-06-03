@@ -48,10 +48,9 @@ class AddCategoriesCollectionToProductCollection
                 $categoryCollection->addItem($allCategories[$category['category_id']]);
             }, $productCategories);
 
-            $categoryCollection->_setIsLoaded();
-            $product->setCategoryCollection($categoryCollection);
-            $reflection = new \ReflectionProperty($product, '_productIdCached');
-            $reflection->setValue($product, $product->getId());
+            $this->executePrivateMethod($categoryCollection, '_setIsLoaded', true);
+            $this->executePrivateMethod($product, 'setCategoryCollection', $categoryCollection);
+            $this->setPrivateProperty($product, '_productIdCached', $product->getId());
         }
 
         return $products;
@@ -62,4 +61,15 @@ class AddCategoriesCollectionToProductCollection
         return null;
     }
 
+    private function executePrivateMethod(mixed $object, string $methodName, ...$args)
+    {
+        $method = new \ReflectionMethod($object, $methodName);
+        return $method->invokeArgs($object, $args);
+    }
+
+    private function setPrivateProperty(mixed $object, string $propertyName, $value)
+    {
+        $property = new \ReflectionProperty($object, $propertyName);
+        $property->setValue($object, $value);
+    }
 }
