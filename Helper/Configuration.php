@@ -28,7 +28,7 @@ class Configuration
 
     public function isCacheAttributeTextValuesEnabled(): bool
     {
-        return $this->scopeConfig->getValue(self::XML_PATH_CACHE_ATTRIBUTE_TEXT_VALUES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_CACHE_ATTRIBUTE_TEXT_VALUES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     public function isCleanParentConfigurableCacheTagsEnabled(): bool
