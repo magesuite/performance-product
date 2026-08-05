@@ -21,6 +21,14 @@
                     <comment><![CDATA[When enabled, configurable product children will have images preloaded for switching images on the tile.]]></comment>
                 </field>
             </group>
+            <group id="configurable_cache" translate="label" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Configurable Products Cache</label>
+                <field id="clean_parent_cache_tags_on_child_save" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Clean Parent Configurable Cache Tags On Child Save</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[When enabled, saving a simple product also cleans cache tags of its parent configurable products (cat_p_<parent_id>, configurable_<parent_id>). Required for correct invalidation of core UsedProductsCache entries because this module disables the product_identities_extender plugin. When disabled, variant price changes may not be visible on storefront until cache entries expire.]]></comment>
+                </field>
+            </group>
             <group id="attributes" translate="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Attributes</label>
                 <field id="cache_attribute_text_values" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">

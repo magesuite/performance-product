@@ -9,6 +9,9 @@
             <attributes>
                 <cache_attribute_text_values>1</cache_attribute_text_values>
             </attributes>
+            <configurable_cache>
+                <clean_parent_cache_tags_on_child_save>1</clean_parent_cache_tags_on_child_save>
+            </configurable_cache>
         </product_performance>
     </default>
 </config>
