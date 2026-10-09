@@ -1,56 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\PerformanceProduct\Model\Category;
 
 class AddCategoriesCollectionToProductCollection
 {
-    protected \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory;
-    protected \MageSuite\PerformanceProduct\Model\ResourceModel\Category\CategoryProduct $categoryProduct;
+    protected ?\ReflectionMethod $setIsLoadedMethod = null;
+    protected ?\ReflectionMethod $setCategoryCollectionMethod = null;
+    protected ?\ReflectionProperty $productIdCachedProperty = null;
 
     public function __construct(
-        \Magento\Framework\App\ResourceConnection $resource,
-        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
-        \MageSuite\PerformanceProduct\Model\ResourceModel\Category\CategoryProduct $categoryProduct
+        protected \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
+        protected \MageSuite\PerformanceProduct\Model\ResourceModel\Category\CategoryProduct $categoryProduct,
+        protected \Magento\Framework\DataObject\Factory $dataObjectFactory
     ) {
-        $this->categoryCollectionFactory = $categoryCollectionFactory;
-        $this->categoryProduct = $categoryProduct;
     }
 
     public function execute(mixed $products, array $productIds): mixed
     {
-        $categories = $this->categoryProduct->getCategoriesByProductIds($productIds);
+        $groupedCategories = $this->groupCategories(
+            $this->categoryProduct->getCategoriesByProductIds($productIds)
+        );
 
-        $categoriesCollection = $this->categoryCollectionFactory->create();
-        $categoriesCollection
-            ->addIdFilter(array_column($categories, 'category_id'))
-            ->addAttributeToSelect('name');
-
-        if($this->getPreloadedStoreId() !== null) {
-            $categoriesCollection->setStoreId($this->getPreloadedStoreId());
-        }
-
-        $allCategories = $categoriesCollection->getItems();
+        $categoryIdsByProductId = $groupedCategories->getCategoryIdsByProductId();
+        $allCategories = $this->loadCategories($groupedCategories->getCategoryIds());
 
         foreach ($products as $product) {
-            $productId = $product->getId();
+            $productId = (int)$product->getId();
 
-            $productCategories = array_filter($categories, function ($category) use ($productId) {
-                return $category['product_id'] == $productId;
-            });
-
-            $categoryCollection = $this->categoryCollectionFactory->create();
-
-            array_map(function ($category) use ($allCategories, $categoryCollection) {
-                if (!isset($allCategories[$category['category_id']])) {
-                    return;
-                }
-
-                $categoryCollection->addItem($allCategories[$category['category_id']]);
-            }, $productCategories);
-
-            $this->executePrivateMethod($categoryCollection, '_setIsLoaded', true);
-            $this->executePrivateMethod($product, 'setCategoryCollection', $categoryCollection);
-            $this->setPrivateProperty($product, '_productIdCached', $product->getId());
+            $this->assignCategoryCollection(
+                $product,
+                $this->buildCategoryCollection($categoryIdsByProductId[$productId] ?? [], $allCategories)
+            );
         }
 
         return $products;
@@ -61,15 +43,88 @@ class AddCategoriesCollectionToProductCollection
         return null;
     }
 
-    private function executePrivateMethod(mixed $object, string $methodName, ...$args)
+    protected function groupCategories(array $categories): \Magento\Framework\DataObject
     {
-        $method = new \ReflectionMethod($object, $methodName);
-        return $method->invokeArgs($object, $args);
+        $categoryIdsByProductId = [];
+        $categoryIds = [];
+
+        foreach ($categories as $category) {
+            $productId = (int)$category['product_id'];
+            $categoryId = (int)$category['category_id'];
+
+            $categoryIdsByProductId[$productId][] = $categoryId;
+            $categoryIds[$categoryId] = true;
+        }
+
+        return $this->dataObjectFactory->create([
+            'category_ids_by_product_id' => $categoryIdsByProductId,
+            'category_ids' => array_keys($categoryIds)
+        ]);
     }
 
-    private function setPrivateProperty(mixed $object, string $propertyName, $value)
+    protected function loadCategories(array $categoryIds): array
     {
-        $property = new \ReflectionProperty($object, $propertyName);
-        $property->setValue($object, $value);
+        $categoriesCollection = $this->categoryCollectionFactory->create();
+        $categoriesCollection
+            ->addIdFilter($categoryIds)
+            ->addAttributeToSelect('name');
+
+        if ($this->getPreloadedStoreId() !== null) {
+            $categoriesCollection->setStoreId($this->getPreloadedStoreId());
+        }
+
+        return $categoriesCollection->getItems();
+    }
+
+    protected function buildCategoryCollection(array $categoryIds, array $allCategories): \Magento\Catalog\Model\ResourceModel\Category\Collection
+    {
+        $categoryCollection = $this->categoryCollectionFactory->create();
+
+        foreach ($categoryIds as $categoryId) {
+            if (!isset($allCategories[$categoryId])) {
+                continue;
+            }
+
+            $categoryCollection->addItem($allCategories[$categoryId]);
+        }
+
+        $this->getSetIsLoadedMethod()->invokeArgs($categoryCollection, [true]);
+
+        return $categoryCollection;
+    }
+
+    protected function assignCategoryCollection(
+        \Magento\Catalog\Model\Product $product,
+        \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection
+    ): void {
+        $this->getSetCategoryCollectionMethod()->invokeArgs($product, [$categoryCollection]);
+        $this->getProductIdCachedProperty()->setValue($product, $product->getId());
+    }
+
+    protected function getSetIsLoadedMethod(): \ReflectionMethod
+    {
+        if ($this->setIsLoadedMethod === null) {
+            $this->setIsLoadedMethod = new \ReflectionMethod(\Magento\Framework\Data\Collection::class, '_setIsLoaded');
+        }
+
+        return $this->setIsLoadedMethod;
+    }
+
+    protected function getSetCategoryCollectionMethod(): \ReflectionMethod
+    {
+        if ($this->setCategoryCollectionMethod === null) {
+            $this->setCategoryCollectionMethod = new \ReflectionMethod(\Magento\Catalog\Model\Product::class, 'setCategoryCollection');
+        }
+
+        return $this->setCategoryCollectionMethod;
+    }
+
+    protected function getProductIdCachedProperty(): \ReflectionProperty
+    {
+        if ($this->productIdCachedProperty === null) {
+            $this->productIdCachedProperty = new \ReflectionProperty(\Magento\Catalog\Model\Product::class, '_productIdCached');
+        }
+
+        return $this->productIdCachedProperty;
     }
 }
