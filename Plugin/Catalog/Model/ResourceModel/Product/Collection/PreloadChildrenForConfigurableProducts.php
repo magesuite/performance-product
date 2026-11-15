@@ -72,7 +72,7 @@ class PreloadChildrenForConfigurableProducts
         $select = $connection
             ->select()
             ->from(['cpsl' => $connection->getTableName('catalog_product_super_link')], ['product_id', 'parent_id'])
-            ->where('cpsl.parent_id IN (?)', $configurableProductIds)
+            ->where('cpsl.parent_id IN (?)', array_keys($configurableProductIds))
             ->orWhere('cpsl.product_id IN (?)', $simpleProductIds);
 
         $data = $connection->fetchAll($select);
